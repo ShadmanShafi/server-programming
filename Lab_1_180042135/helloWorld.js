@@ -2,4 +2,4 @@ const Hello = () => {
     console.log("Hello Weeb!");
 };
 
-Hello();
+module.exports = { HelloFunc: Hello };
