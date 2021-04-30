@@ -1,4 +1,4 @@
-let amount = 8;
+let amount = 7;
 
 if (amount < 10) {
     console.log("Okay!");
