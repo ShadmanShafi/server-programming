@@ -1,16 +1,16 @@
 const getLogin = (req, res)=>{
     res.render("users/login.ejs");
-}
+};
 
 const postLogin = (req, res)=>{
     const { email, password } = req.body;
     console.log(email);
     console.log(password);
-}
+};
 
 const getRegister = (req, res)=>{
-    res.render("users/register.ejs");
-}
+    res.render("users/register.ejs", {errors:req.flash('errors')});
+};
 
 const postRegister = (req, res)=>{
     const { name, email, password, confirm_password } = req.body;
@@ -31,7 +31,7 @@ const postRegister = (req, res)=>{
         errors.push("Passwords do not match!");
     }
     if (errors.length > 0) {
-        console.log(errors);
+        req.flash("errors", errors);
         res.redirect("/users/register");
     } else {
 //Create New User
@@ -44,4 +44,4 @@ module.exports = {
     getRegister,
     postLogin,
     postRegister,
-}
+};
