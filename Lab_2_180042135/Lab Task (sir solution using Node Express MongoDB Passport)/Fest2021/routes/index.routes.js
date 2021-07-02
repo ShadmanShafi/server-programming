@@ -6,4 +6,8 @@ router.get("/",(req, res)=>{
     res.render("welcome.ejs");
 });
 
+router.get("/dashboard", (req, res) => {
+    res.render("dashboard.ejs");
+  });
+
 module.exports = router; 
