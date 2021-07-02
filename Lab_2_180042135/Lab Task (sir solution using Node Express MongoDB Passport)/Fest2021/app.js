@@ -17,7 +17,7 @@ mongoose
   })
   .catch((error) => {
     console.log(error);
-  });
+  })
 
 //Static Resources
 app.use(express.static("public"));
