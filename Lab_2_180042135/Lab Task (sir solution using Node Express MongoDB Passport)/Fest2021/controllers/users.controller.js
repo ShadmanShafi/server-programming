@@ -1,3 +1,6 @@
+const User = require('../models/User.model');
+const bcrypt = require('bcryptjs');
+
 const getLogin = (req, res)=>{
     res.render("users/login.ejs");
 };
@@ -14,10 +17,6 @@ const getRegister = (req, res)=>{
 
 const postRegister = (req, res)=>{
     const { name, email, password, confirm_password } = req.body;
-    console.log(name);
-    console.log(email);
-    console.log(password);
-    console.log(confirm_password);
 
 //Data Validation
     const errors = [];
@@ -34,8 +33,47 @@ const postRegister = (req, res)=>{
         req.flash("errors", errors);
         res.redirect("/users/register");
     } else {
+
 //Create New User
-    res.redirect("users.login");
+User.findOne({ email: email }).then((user) => {
+    if (user) {
+      errors.push("User already exists with this email!");
+      req.flash("errors", errors);
+      res.redirect("/users/register");
+    } else {
+      bcrypt.genSalt(10, (err, salt) => {
+        if (err) {
+          errors.push(err);
+          req.flash("errors", errors);
+          res.redirect("/users/register");
+        } else {
+          bcrypt.hash(password, salt, (err, hash) => {
+            if (err) {
+              errors.push(err);
+              req.flash("errors", errors);
+              res.redirect("/users/register");
+            } else {
+              const newUser = new User({
+                name,
+                email,
+                password: hash,
+              });
+              newUser
+                .save()
+                .then(() => {
+                  res.redirect("/users/login");
+                })
+                .catch(() => {
+                  errors.push("Saving User to the daatabase failed!");
+                  req.flash("errors", errors);
+                  res.redirect("/users/register");
+                });
+            }
+          });
+        }
+      });
+    }
+  });
   }
 };
 
