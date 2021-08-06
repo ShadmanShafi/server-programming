@@ -149,6 +149,49 @@ const selectMO = (req, res) => {
     });
 };
 
+const getMOedit = (req, res) => {
+    // res.render("math-olympiad/register.ejs", { error: req.flash("error") });
+      MathOlympiad.findOne({ _id: req.params.id })
+          .then((participant) => {
+              if (!participant) {
+                  error = "Invalid Participant";
+                  req.flash("error", error);
+                  res.redirect("/MathOlympiad/list");
+              } else {
+                  res.render("math-olympiad/edit.ejs", {
+                      error: req.flash("error"),
+                      participant,
+                  });
+              }
+          })
+          .catch((err) => {
+              console.log(err)
+              error = "Data Retrieval Failed";
+              req.flash("error", error);
+              res.redirect("/MathOlympiad/list");
+          });
+  };
+  
+  const postMOedit = (req, res) =>{
+    const { name, category, contact, email, institution, tshirt } = req.body;
+    console.log(name);
+      console.log(category);
+      console.log(contact);
+      console.log(email);
+      console.log(institution);
+      console.log(tshirt);
+    const filter = {_id: req.params.id}
+    MathOlympiad.findOneAndUpdate(filter,{$set:{name, category, contact, email, institution, tshirt }}).then(() => {
+      let error = "Data has been edited successfully!";
+              req.flash("error", error);
+              res.redirect("/MathOlympiad/list");
+    }).catch(() => {
+      let error = "Failed to edit data";
+      req.flash("error", error);
+      res.redirect("/MathOlympiad/list");
+  });
+  }
+
 module.exports = {
   getMO,
   postMO,
@@ -156,4 +199,6 @@ module.exports = {
   deleteMO,
   paymentDoneMO,
   selectMO,
+  getMOedit,
+  postMOedit, 
 };
